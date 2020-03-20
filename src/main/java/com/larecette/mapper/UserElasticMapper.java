@@ -36,6 +36,6 @@ public class UserElasticMapper implements ElasticMapper<UserKafka, UserElastic> 
         userKafka.setWeight(userElastic.getWeight());
         userKafka.setHeight(userElastic.getHeight());
 
-        return null;
+        return userKafka;
     }
 }
