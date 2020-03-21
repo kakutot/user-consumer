@@ -9,6 +9,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
@@ -16,14 +17,26 @@ import java.util.Properties;
 @Configuration
 public class KafkaConsumerConfig {
 
+    @Value("${kafka.broker.host}")
+    private String brokerHost;
+
+    @Value("${kafka.broker.port}")
+    private int brokerPort;
+
+    @Value("${kafka.schemaRegistry.host}")
+    private String schemaRegistryHost;
+
+    @Value("${kafka.schemaRegistry.port}")
+    private int schemaRegistryPort;
+
     private Properties getBaseConsumerProps() {
         final Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "35.226.28.109:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerHost + ":" + brokerPort);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "1000");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "default");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://35.226.28.109:8081");
+        props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryHost + ":" + schemaRegistryPort);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
